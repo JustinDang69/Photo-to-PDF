@@ -129,3 +129,56 @@ Word Draft Generation
 Professional Review
       ↓
 Final PDF Export
+
+
+## Real-World Value
+
+This project was developed around a real operational workflow in a law-firm environment.
+
+The main value was reducing repetitive preparation work before professional review.
+
+Instead of starting with an unstructured folder containing a large number of photos, the workflow can produce a more organised starting point by:
+
+- ordering photos using trusted metadata where available
+- identifying duplicate and visually similar images
+- grouping photos into candidate events
+- analysing representative images
+- generating short factual descriptions
+- separating uncertain results for manual review
+- organising selected evidence into Word drafts
+- converting approved documents into submission-ready PDFs
+
+This allows more human effort to be spent on reviewing the relevance and quality of the evidence rather than repetitive sorting and file handling.
+
+No real client photos or case documents are included in this public repository.
+
+## Privacy-Focused Redesign
+
+The current prototype demonstrated that external vision AI can be useful for understanding large photo collections.
+
+However, working with sensitive client material highlighted an important limitation: when raw images are sent to an external AI service, the application owner has less control over where and how that data is processed.
+
+The next phase is therefore focused on reducing that dependency.
+
+### Target Phase 2 Workflow
+
+A locally hosted pre-trained vision or vision-language model will be evaluated to:
+
+- scan each image locally
+- generate a short factual caption
+- describe broad visual context
+- produce structured image descriptions
+- support event classification using those generated captions
+
+Target flow:
+
+```text
+Client Photo
+    ↓
+Local Pre-Trained Vision Model
+    ↓
+Local Caption / Visual Description
+    ↓
+Event Classification
+    ↓
+Human Review
