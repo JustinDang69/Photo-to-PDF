@@ -130,7 +130,7 @@ Professional Review
       ↓
 Final PDF Export
 
-
+```
 ## Real-World Value
 
 This project was developed around a real operational workflow in a law-firm environment.
