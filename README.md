@@ -1,111 +1,387 @@
 # Privacy-Aware Photo Evidence Processing & Document Automation
 
-A Python-based automation pipeline developed to reduce the manual work involved in preparing large collections of photographic evidence for legal and immigration matters.
+A Python-based automation pipeline developed to reduce the repetitive work involved in preparing large collections of photographic evidence for professional review.
 
-The project was developed from a real workflow problem encountered in a law-firm environment: large volumes of client photos had to be reviewed, dated, grouped into meaningful events, checked for duplicates, described, selected and eventually assembled into structured documents for professional review.
+The project originated from a **real law-firm workflow**, where large collections of client photos needed to be reviewed, dated, checked for duplicates, grouped into events, described, selected and converted into structured documents.
 
-## The Real-World Problem
+The goal is not to replace professional judgement.
 
-Preparing photographic evidence manually can involve repetitive work such as:
+Instead, the system automates repetitive preparation so that human reviewers can focus on the quality, relevance and accuracy of the evidence.
 
-- opening hundreds of photos individually
-- determining when each photo was taken
-- identifying duplicate or near-duplicate images
-- deciding which photos belong to the same event
-- describing the context shown in each photo
-- separating different evidence categories
-- choosing representative photos
-- organising them into folders
-- building Word documents
-- revising the documents after professional review
-- converting the final approved documents into PDFs that meet submission limits
+---
 
-Doing this manually is time-consuming and makes it easy to lose consistency when the number of photos becomes large.
+## The Problem
 
-This project was built to automate much of that workflow while keeping a human reviewer in control of the final evidence.
+Preparing large collections of photographic evidence manually can require:
+
+- opening hundreds of images
+- determining when each image was captured
+- identifying duplicates
+- detecting visually similar images
+- grouping photos into meaningful events
+- writing descriptions
+- categorising events
+- selecting representative photos
+- organising files
+- generating Word documents
+- revising documents after professional review
+- generating final PDFs
+- meeting page-count and file-size requirements
+
+This becomes increasingly time-consuming and inconsistent as the number of photos grows.
+
+---
+
+## Solution
+
+The project creates an automated pipeline that transforms an unstructured photo collection into a structured starting point for professional review.
+
+```text
+Client Photo Collection
+        ↓
+Metadata & EXIF Scan
+        ↓
+Duplicate Detection
+        ↓
+Visual Similarity Analysis
+        ↓
+Event Clustering
+        ↓
+AI-Assisted Image Analysis
+        ↓
+Event Classification
+        ↓
+Confidence-Based Review
+        ↓
+Human Photo Selection
+        ↓
+Word Draft Generation
+        ↓
+Professional Review
+        ↓
+PDF Export & Validation
+```
+
+---
 
 ## How It Helped in Practice
 
-The system was used as part of a real law-firm workflow to assist with organising client photographic evidence.
+The system was used as part of a real operational law-firm workflow.
 
-Instead of manually inspecting and organising every image from the beginning, the pipeline could first process the collection automatically and prepare a structured starting point for review.
+Rather than beginning with an unstructured photo folder, the workflow can automatically prepare information including:
 
-For example, the workflow can:
+- trusted capture dates
+- duplicate-photo candidates
+- visually similar images
+- possible event groupings
+- factual image descriptions
+- event categories
+- confidence scores
+- uncertain cases requiring review
+- structured photo selections
+- draft evidence documents
 
-1. scan the client's photo collection
-2. extract reliable capture dates from image metadata
-3. identify duplicates and visually similar photos
-4. group photos that appear to belong to the same event
-5. analyse representative photos
-6. generate short factual descriptions of the events
-7. organise events into relevant evidence categories
-8. flag uncertain results for manual review
-9. allow a person to select the strongest photos
-10. generate structured Word drafts
-11. convert approved documents into submission-ready PDFs
+This shifts human effort away from repetitive file handling and toward reviewing whether the evidence is accurate, relevant and suitable.
 
-This does not replace the lawyer or professional reviewer.
-
-Instead, it reduces repetitive preparation work so that more time can be spent reviewing the quality and relevance of the evidence.
+---
 
 ## Current Architecture
 
-The current prototype combines traditional Python processing with a vision-capable AI model.
+The current implementation combines traditional local processing with selected AI-assisted visual analysis.
 
-### Local processing
+### Local Processing
 
-Several operations happen locally:
+The following stages are performed locally:
 
+- file discovery
 - EXIF metadata extraction
 - trusted capture-date detection
 - duplicate detection
-- visual similarity checking
+- visual similarity analysis
 - event clustering
 - file organisation
 - human review
-- document generation
-- PDF conversion, splitting and compression
+- photo selection
+- Word document generation
+- PDF conversion
+- PDF splitting and compression
+- final-output validation
 
-### Current AI processing
+### AI-Assisted Processing
 
-For the current prototype, selected representative photos are sent to the Gemini API.
+The current prototype uses a vision-capable **Gemini API** for selected image-analysis tasks.
 
-The vision model analyses the images and can automatically generate information such as:
+The AI can generate:
 
-- a factual description of the scene
-- an event classification
-- a suggested event name
-- a confidence score
+- factual image descriptions
+- suggested event names
+- event classifications
+- confidence scores
 
-Low-confidence results are not automatically accepted and are instead sent to a human-review stage.
+Low-confidence or uncertain results are routed to human review rather than being automatically accepted.
 
-## Privacy Limitation Discovered
+---
 
-The first version proved that AI vision can significantly reduce manual photo-review work.
+## Main Workflow
 
-However, it also exposed an important architectural problem.
+### 1. Photo Metadata Scanning
 
-Legal and immigration evidence may contain highly sensitive client photos.
+The system scans common image formats and extracts available metadata.
 
-When an external AI API is used for visual analysis, raw client images leave the local environment and are processed by infrastructure that the application owner does not fully control.
+Supported processing includes formats such as:
 
-Even when a provider has privacy and security safeguards, this is not the architecture I want to rely on long term for confidential client material.
+- JPEG / JPG
+- PNG
+- HEIC / HEIF
+- WebP
 
-This became one of the most important lessons from the project:
+Where available, trusted EXIF fields such as capture date are prioritised over less reliable filesystem timestamps.
 
-> A solution can work technically while still needing improvement from a privacy and data-governance perspective.
+---
 
-## Next Stage — Local Pre-Trained Vision Model
+### 2. Duplicate Detection
 
-The next stage of the project is therefore focused on privacy-preserving AI.
+The workflow checks for duplicated or near-duplicated images.
 
-Instead of uploading raw client photos to an external generative-AI service, the plan is to use a **pre-trained vision or vision-language model running locally or within controlled infrastructure**.
+This reduces repeated evidence and allows reviewers to focus on representative photos.
 
-The model will scan each image and automatically generate a factual caption or structured visual description.
+The project includes both:
 
-The caption can then be used by the remaining classification and document-processing pipeline.
+- exact / metadata-based duplicate checks
+- visual similarity processing
 
-### Planned Architecture
+---
+
+### 3. Event Clustering
+
+Photos are grouped into possible events based on available information such as:
+
+- capture timing
+- neighbouring photos
+- similarity
+- existing event context
+
+These clusters form the basis for later classification and description.
+
+---
+
+### 4. AI-Assisted Image Understanding
+
+Representative or uncertain images can be analysed using a vision model.
+
+The model is used to generate structured information rather than make final decisions.
+
+Example outputs include:
+
+```text
+Event:
+Family gathering
+
+Description:
+Several people seated together at a dining table in an indoor setting.
+
+Category:
+SOCIAL
+
+Confidence:
+0.87
+```
+
+The system is designed to avoid inventing dates or identifying people.
+
+---
+
+## Confidence-Based Review
+
+AI results are not automatically treated as correct.
+
+A confidence threshold is used to separate results into:
+
+```text
+High Confidence
+      ↓
+Continue Through Workflow
+
+Low Confidence / Ambiguous
+      ↓
+REVIEW
+      ↓
+Human Decision
+```
+
+This creates a **human-in-the-loop** workflow.
+
+---
+
+## Human Review
+
+Human review remains a required part of the system.
+
+The reviewer can:
+
+- inspect event groups
+- check generated descriptions
+- reject incorrect classifications
+- review uncertain images
+- select representative photos
+- control what is included in the final document
+
+The AI acts as a workflow assistant rather than the final decision-maker.
+
+---
+
+## Document Automation
+
+After photo review, the system can generate structured evidence documents.
+
+The workflow supports:
+
+- selected-photo placement
+- event headings
+- photo descriptions
+- Word document generation
+- review-ready drafts
+- approved-document conversion
+- final PDF generation
+
+This connects image processing directly with document preparation.
+
+---
+
+## PDF Processing
+
+The final stage focuses on producing practical submission-ready documents.
+
+The pipeline can:
+
+- convert approved Word documents to PDF
+- split oversized documents
+- limit page counts
+- compress image-heavy PDFs
+- validate final file sizes
+- verify generated documents
+
+The original approved source documents are not modified.
+
+---
+
+## Repository Components
+
+### `scan_photos_v2.py`
+
+Scans photo collections and extracts trusted metadata.
+
+### `check_duplicates.py`
+
+Checks for duplicate records or images.
+
+### `find_visual_duplicates.py`
+
+Identifies visually similar photo candidates.
+
+### `cluster_events.py`
+
+Groups photos into possible events.
+
+### `classify_events.py`
+
+Uses AI-assisted visual analysis to classify events and generate structured descriptions.
+
+### `classify_unknown_photos.py`
+
+Analyses photos that could not confidently be assigned during earlier processing.
+
+### `inspect_unknown_neighbors.py`
+
+Provides additional context for uncertain photos using neighbouring items.
+
+### `select_photos.py`
+
+Supports human review and final photo selection.
+
+### `build_word_drafts_v4_3_resume.py`
+
+Generates structured Word-document drafts from reviewed photo evidence.
+
+### `export_approved_pdfs.py`
+
+Converts reviewed documents into final PDFs and applies page/file-size validation.
+
+### `lodgement_merge.py`
+
+Supports final document assembly.
+
+### `organize_output.py`
+
+Organises generated workflow outputs.
+
+---
+
+## Technologies
+
+### Programming & Data
+
+- Python
+- Pandas
+- pathlib
+- CSV processing
+
+### Image Processing
+
+- Pillow
+- pillow-heif
+- EXIF metadata
+- visual similarity analysis
+
+### AI / Computer Vision
+
+- Gemini Vision API — current prototype
+- vision-language modelling
+- structured AI output
+- confidence-based classification
+
+### Documents
+
+- Microsoft Word automation
+- LibreOffice
+- PyMuPDF
+- PDF conversion
+- PDF splitting
+- PDF compression
+- document validation
+
+### Workflow Design
+
+- human-in-the-loop review
+- confidence thresholds
+- non-destructive processing
+- intermediate workflow records
+
+---
+
+## Privacy Limitation Identified
+
+The current prototype demonstrated that external vision APIs can significantly reduce manual image-review work.
+
+However, the project also revealed an important architectural issue.
+
+Photographic evidence can contain highly sensitive client information.
+
+When raw images are sent to an external AI service, the application owner has less control over where and how those images are processed.
+
+Even where an external provider has strong privacy and security protections, reducing unnecessary third-party exposure is preferable for sensitive workflows.
+
+This led to the next stage of the project.
+
+---
+
+## Phase 2 — Local Vision Model
+
+The planned next stage replaces external raw-image analysis with a **pre-trained vision or vision-language model running locally or within controlled infrastructure**.
+
+The goal is for the model to scan each image and automatically produce a factual caption or structured visual description without requiring the raw photo to be sent to an external AI service.
+
+### Target Architecture
 
 ```text
 Client Photos
@@ -129,56 +405,148 @@ Word Draft Generation
 Professional Review
       ↓
 Final PDF Export
-
 ```
-## Real-World Value
 
-This project was developed around a real operational workflow in a law-firm environment.
-
-The main value was reducing repetitive preparation work before professional review.
-
-Instead of starting with an unstructured folder containing a large number of photos, the workflow can produce a more organised starting point by:
-
-- ordering photos using trusted metadata where available
-- identifying duplicate and visually similar images
-- grouping photos into candidate events
-- analysing representative images
-- generating short factual descriptions
-- separating uncertain results for manual review
-- organising selected evidence into Word drafts
-- converting approved documents into submission-ready PDFs
-
-This allows more human effort to be spent on reviewing the relevance and quality of the evidence rather than repetitive sorting and file handling.
-
-No real client photos or case documents are included in this public repository.
-
-## Privacy-Focused Redesign
-
-The current prototype demonstrated that external vision AI can be useful for understanding large photo collections.
-
-However, working with sensitive client material highlighted an important limitation: when raw images are sent to an external AI service, the application owner has less control over where and how that data is processed.
-
-The next phase is therefore focused on reducing that dependency.
-
-### Target Phase 2 Workflow
-
-A locally hosted pre-trained vision or vision-language model will be evaluated to:
-
-- scan each image locally
-- generate a short factual caption
-- describe broad visual context
-- produce structured image descriptions
-- support event classification using those generated captions
-
-Target flow:
+Example local-model output:
 
 ```text
-Client Photo
-    ↓
-Local Pre-Trained Vision Model
-    ↓
-Local Caption / Visual Description
-    ↓
-Event Classification
-    ↓
-Human Review
+Photo Caption:
+Three adults standing together outdoors in front of a restaurant.
+
+Possible Event:
+Dinner gathering
+
+Confidence:
+0.91
+```
+
+The generated captions can then feed the existing event-classification and document-processing pipeline.
+
+---
+
+## Why Move Toward Local AI?
+
+The change is not simply about replacing one model with another.
+
+It is an architectural decision based on data sensitivity.
+
+Potential advantages include:
+
+- reduced transmission of raw client images
+- greater control over where processing occurs
+- reduced dependency on third-party AI infrastructure
+- improved data-governance options
+- ability to run workflows in controlled environments
+
+The trade-offs include:
+
+- local hardware requirements
+- inference speed
+- model size
+- deployment complexity
+- potentially lower capability than large hosted models
+
+These trade-offs will be evaluated during Phase 2.
+
+---
+
+## Project Status
+
+### Phase 1 — Working Prototype
+
+- ✅ photo metadata scanning
+- ✅ trusted EXIF date extraction
+- ✅ duplicate detection
+- ✅ visual similarity processing
+- ✅ event clustering
+- ✅ Gemini-assisted image analysis
+- ✅ automatic event descriptions
+- ✅ event classification
+- ✅ confidence-based review
+- ✅ human photo selection
+- ✅ Word draft generation
+- ✅ PDF generation
+- ✅ PDF splitting and compression
+- ✅ final-output validation
+
+### Phase 2 — Planned
+
+- 🔄 evaluate suitable pre-trained vision-language models
+- 🔄 test local image caption generation
+- 🔄 compare local-model accuracy with the current API workflow
+- 🔄 integrate local captions into event classification
+- 🔄 benchmark inference speed and hardware requirements
+- 🔄 evaluate deployment and privacy trade-offs
+- 🔄 reduce reliance on external raw-image analysis
+
+---
+
+## Key Engineering Lessons
+
+This project demonstrated that solving a real workflow problem requires more than simply integrating an AI API.
+
+Important engineering challenges included:
+
+- working with unstructured real-world files
+- incomplete or unreliable metadata
+- duplicate detection
+- visual similarity
+- image understanding
+- uncertain predictions
+- human review
+- document-generation constraints
+- PDF limits
+- workflow reliability
+- privacy and data governance
+
+One of the most important lessons was:
+
+> A technically successful AI system may still require architectural redesign when it is applied to sensitive real-world data.
+
+---
+
+## Real-World Value
+
+The main value of the system is not replacing professional judgement.
+
+It is reducing repetitive preparation work.
+
+Instead of spending the majority of time opening, sorting and organising individual images, the system prepares a structured starting point that can then be reviewed by a human professional.
+
+This allows more effort to be spent on:
+
+- evidence quality
+- relevance
+- accuracy
+- final professional decisions
+
+---
+
+## Limitations
+
+The current prototype has several limitations:
+
+- AI classifications may be incorrect
+- metadata may be missing
+- visually similar photos may not always belong to the same event
+- external AI processing remains part of the current prototype
+- local vision-model performance still needs evaluation
+- professional review remains necessary
+
+---
+
+## Disclaimer
+
+This project demonstrates workflow automation, computer vision and document-processing techniques.
+
+It does not provide legal advice and does not replace professional review.
+
+No real client photographs or case documents are included in this public repository.
+
+---
+
+## Author
+
+**Justin Dang**
+
+Data Analytics • Data Science • Automation
