@@ -549,4 +549,5 @@ No real client photographs or case documents are included in this public reposit
 
 **Justin Dang**
 
-Data Analytics • Data Science • Automation
+Bachelor of Data Science Student  
+Aspiring Data Analyst / Data Scientist
